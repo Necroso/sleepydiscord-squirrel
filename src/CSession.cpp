@@ -140,6 +140,14 @@ void CSession::runSleepy(std::string token) {
 			this->client->session = this;
 		}
 
+		int botIntents = SleepyDiscord::Intent::SERVERS |
+			SleepyDiscord::Intent::SERVER_MESSAGES |
+			SleepyDiscord::Intent::SERVER_MEMBERS |
+			SleepyDiscord::Intent::SERVER_PRESENCES |
+			SleepyDiscord::Intent::MESSAGE_CONTENT;
+
+		client->setIntents(botIntents);
+
 		client->run();
 	}
 	catch (...) {
