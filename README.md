@@ -215,6 +215,6 @@ To compile the plugin using your chosen configuration, run the following command
 ```bash
 cd ~/sleepydiscord-squirrel
 make config=release
-
+```
 
 Once the build completes successfully, the generated static library can be linked against the plugin during compilation.
