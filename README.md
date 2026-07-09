@@ -219,7 +219,9 @@ make config=release
 
 Once the build completes successfully, the generated static library can be linked against the plugin during compilation.
 
-### Example of a Squirrel script
+---
+
+### Example of a Squirrel script:
 ```squirrel
 sessions <- {};
 
