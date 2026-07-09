@@ -54,7 +54,7 @@ static inline void OutputMessageImpl(const SQChar *msg, va_list args) {
 
 	SetConsoleTextAttribute(hstdout, csb_before.wAttributes);
 #else
-	std::printf("\033[35m[DISCORD]\033[0m");
+	std::printf("\033[35m[DISCORD]\033[0m ");
 	std::vprintf(msg, args);
 	std::puts("");
 #endif // SQ_OS_WINDOWS
@@ -79,7 +79,7 @@ static inline void OutputErrorImpl(const SQChar *msg, va_list args) {
 
 	SetConsoleTextAttribute(hstdout, csb_before.wAttributes);
 #else
-	std::printf("\033[21;91m[MODULE]\033[0m");
+	std::printf("\033[21;91m[MODULE]\033[0m ");
 	std::vprintf(msg, args);
 	std::puts("");
 #endif // SQ_OS_WINDOWS

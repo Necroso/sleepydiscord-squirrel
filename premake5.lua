@@ -1,6 +1,10 @@
 workspace "sleepydiscord-squirrel"
-    configurations { "Debug", "Release" }
-    platforms { "Win32", "x64" }
+    if os.target() == "windows" then
+        configurations { "Debug", "Release" }
+        platforms { "Win32", "x64" }
+    else
+        configurations { "Debug", "Release", "debug32", "release32" }
+    end
 
 project "sleepydiscord-squirrel"
     kind "SharedLib"
@@ -8,6 +12,7 @@ project "sleepydiscord-squirrel"
     cppdialect "C++20"
 
     targetname "discord04rel"
+    targetprefix "" 
 
     files {
         "src/**.cpp",
@@ -16,6 +21,7 @@ project "sleepydiscord-squirrel"
 
     includedirs {
         ".",
+        "src",
         "include",
         "readerwriterqueue"
     }
@@ -27,6 +33,40 @@ project "sleepydiscord-squirrel"
     forceincludes {
         "algorithm"
     }
+
+
+-- ==========================
+-- Build Shortcut Mapping for Linux
+-- ==========================
+
+filter { "system:linux", "configurations:Release" }
+    architecture "x86_64"
+    targetsuffix "64"
+    externalincludedirs { "/usr/include/x86_64-linux-gnu" }
+
+filter { "system:linux", "configurations:Debug" }
+    architecture "x86_64"
+    targetsuffix "64"
+    externalincludedirs { "/usr/include/x86_64-linux-gnu" }
+
+filter { "system:linux", "configurations:release32" }
+    architecture "x86"
+    targetsuffix "32"
+    runtime "Release"
+    optimize "Full"
+    linktimeoptimization "On"
+    targetdir "bin/Release"
+    objdir "obj/Release"
+    externalincludedirs { "/usr/include/i386-linux-gnu" }
+
+filter { "system:linux", "configurations:debug32" }
+    architecture "x86"
+    targetsuffix "32"
+    runtime "Debug"
+    symbols "On"
+    targetdir "bin/Debug"
+    objdir "obj/Debug"
+    externalincludedirs { "/usr/include/i386-linux-gnu" }
 
 
 -- ==========================
@@ -67,7 +107,7 @@ filter "system:windows"
     }
 
 
-    filter "platforms:Win32"
+    filter { "system:windows", "platforms:Win32" }
 
         architecture "x86"
         targetsuffix "32"
@@ -89,7 +129,7 @@ filter "system:windows"
         }
 
 
-    filter "platforms:x64"
+    filter { "system:windows", "platforms:x64" }
 
         architecture "x86_64"
         targetsuffix "64"
@@ -117,17 +157,21 @@ filter "system:windows"
 
 filter "system:linux"
 
-    architecture "x86_64"
-
     targetextension ".so"
 
-    includedirs {
-        "/usr/local/include",
-        "/usr/local/include/sleepy_discord"
+    local homeDir = os.getenv("HOME") or os.getenv("USERPROFILE") or ""
+
+    externalincludedirs {
+        homeDir .. "/sleepy-discord/include",
+        homeDir .. "/sleepy-discord/deps/asio/include",
+        homeDir .. "/sleepy-discord/deps/cpr/include",
+        "/usr/include/opus"
     }
 
     libdirs {
-        "/usr/local/lib"
+        homeDir .. "/sleepy-discord/build",
+        homeDir .. "/sleepy-discord/build/sleepy_discord",
+        homeDir .. "/sleepy-discord/build/deps/cpr/cpr"
     }
 
     links {
@@ -144,28 +188,20 @@ filter "system:linux"
 
 
 -- ==========================
--- Configurations
+-- Configurations (Debug vs Release)
 -- ==========================
 
-filter "configurations:Debug"
-
+filter "configurations:Debug*"
     runtime "Debug"
-
     symbols "On"
-
     targetdir "bin/Debug"
     objdir "obj/Debug"
 
-
-filter "configurations:Release"
-
+filter "configurations:Release*"
     runtime "Release"
-
     optimize "Full"
     symbols "Off"
-
     linktimeoptimization "On"
-
     targetdir "bin/Release"
     objdir "obj/Release"
 
@@ -174,20 +210,10 @@ filter "configurations:Release"
 -- Windows static runtime
 -- ==========================
 
-filter {
-    "system:windows",
-    "configurations:Debug"
-}
-
+filter { "system:windows", "configurations:Debug*" }
     staticruntime "on"
 
-
-filter {
-    "system:windows",
-    "configurations:Release"
-}
-
+filter { "system:windows", "configurations:Release*" }
     staticruntime "on"
-
 
 filter {}
