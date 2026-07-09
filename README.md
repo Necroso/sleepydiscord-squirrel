@@ -174,9 +174,19 @@ cmake .. \
     -DAUTO_DOWNLOAD_LIBRARY=OFF \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+
+make
 ```
 
 ### For 32-bit builds
+
+If you are running this after compiling for x64, you must clean the build directory first (and vice versa when switching from x86 to x64):
+
+```bash
+cd ~/sleepy-discord
+mkdir -p build && cd build
+rm -rf *
+```
 
 ```bash
 cmake .. \
@@ -185,16 +195,26 @@ cmake .. \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_CXX_FLAGS="-m32" \
     -DCMAKE_C_FLAGS="-m32"
+
+make
 ```
 
 ---
 
-## Building
+## Building the plugin
 
-Compile the library with:
+Before compiling, choose the correct configuration command depending on your target server architecture (**x64** or **x86**). Each command will output a specific binary file:
+
+| Command | Architecture | Generated Binary | Description |
+| :--- | :---: | :--- | :--- |
+| `make config=release` | **x64** (64-bit) | `discord04rel64.so` | Standard build for modern 64-bit systems. |
+| `make config=release32` | **x86** (32-bit) | `discord04rel32.so` | Required if your game server runs on a 32-bit environment. |
+
+To compile the plugin using your chosen configuration, run the following commands (example using x64):
 
 ```bash
-make
-```
+cd ~/sleepydiscord-squirrel
+make config=release
+
 
 Once the build completes successfully, the generated static library can be linked against the plugin during compilation.
