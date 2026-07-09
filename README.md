@@ -68,10 +68,6 @@ Open the generated solution in **Visual Studio 2022** and build using one of the
 
 ---
 
-## Linux
-
----
-
 # Compiling the Plugin on Linux
 
 ## Installing Dependencies
