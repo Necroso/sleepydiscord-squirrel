@@ -70,6 +70,135 @@ Open the generated solution in **Visual Studio 2022** and build using one of the
 
 ## Linux
 
-Linux build instructions are **not available yet**.
+---
 
-I am currently working on documenting the Linux build process. Unfortunately, getting this project to compile on Linux has been a nightmare due to dependency compatibility and build system issues. Once I have a reliable and reproducible process, this section will be updated.
+# Compiling the Plugin on Linux
+
+## Installing Dependencies
+
+### For 64-bit builds
+
+If you are compiling the plugin for a native 64-bit Linux system, install the required development packages:
+
+```bash
+sudo apt update
+sudo apt install libcurl4-openssl-dev libopus-dev libsodium-dev zlib1g-dev libssl-dev
+```
+
+### For 32-bit builds
+
+If you need to build a 32-bit shared library (`.so`) on a 64-bit system, first enable multiarch support and install the 32-bit development packages:
+
+```bash
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libcurl4-openssl-dev:i386 libopus-dev:i386 libsodium-dev:i386 zlib1g-dev:i386 libssl-dev:i386
+```
+
+### Possible Multiarch Conflict (libcurl)
+
+When installing the 32-bit packages, `dpkg` may report a file conflict involving `curl-config`. If this happens, force the package installation and repair any pending dependencies:
+
+```bash
+# Force installation (adjust the package version if necessary)
+sudo dpkg -i --force-overwrite /var/cache/apt/archives/libcurl4-openssl-dev_*_i386.deb
+
+# Repair pending dependencies
+sudo apt install -f
+```
+
+---
+
+## Building Sleepy-Discord
+
+The project depends on a manually built copy of **Sleepy-Discord**.
+
+### Clone the repository and its dependencies
+
+```bash
+cd ~
+git clone https://github.com/yourWaifu/sleepy-discord.git
+cd sleepy-discord
+
+mkdir deps
+
+git clone https://github.com/libcpr/cpr.git deps/cpr
+git clone https://github.com/chriskohlhoff/asio.git deps/asio
+```
+
+---
+
+## Required Source Patch
+
+Recent compiler versions require an additional include in Sleepy-Discord.
+
+Open the following file:
+
+```text
+~/sleepy-discord/include/sleepy_discord/json_wrapper.h
+```
+
+Immediately below:
+
+```cpp
+#pragma once
+```
+
+add:
+
+```cpp
+#include <algorithm>
+```
+
+The beginning of the file should look like this:
+
+```cpp
+#pragma once
+
+#include <algorithm>
+#include <string>
+#include "nonstd/string_view.hpp"
+```
+
+---
+
+## Configuring the Build
+
+Create a build directory:
+
+```bash
+mkdir build
+cd build
+```
+
+### For 64-bit builds
+
+```bash
+cmake .. \
+    -DAUTO_DOWNLOAD_LIBRARY=OFF \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+```
+
+### For 32-bit builds
+
+```bash
+cmake .. \
+    -DAUTO_DOWNLOAD_LIBRARY=OFF \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DCMAKE_CXX_FLAGS="-m32" \
+    -DCMAKE_C_FLAGS="-m32"
+```
+
+---
+
+## Building
+
+Compile the library with:
+
+```bash
+make
+```
+
+Once the build completes successfully, the generated static library can be linked against the plugin during compilation.
