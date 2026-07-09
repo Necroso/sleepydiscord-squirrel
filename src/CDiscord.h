@@ -1,10 +1,10 @@
 #pragma once
 
 // ------------------------------------------------------------------------------------------------
-#include "sleepy_discord/websocketpp_websocket.h"
+#include "sleepy_discord/sleepy_discord.h"
+#include "sleepy_discord/websocket.h"
 #include "CSession.h"
 #include "Guild.h"
-
 // ------------------------------------------------------------------------------------------------
 #include <vector>
 #include <unordered_map>

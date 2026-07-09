@@ -31,7 +31,8 @@ CSession::CSession() {
 		}
 			// This is part of multiple session instances
 		else {
-			connID = s_Sessions.size();
+			//connID = s_Sessions.size();
+			connID = static_cast<unsigned short>(s_Sessions.size());
 			s_Sessions.push_back(this);
 		}
 
@@ -85,7 +86,7 @@ unsigned short int CSession::GetConnID() {
 
 // ------------------------------------------------------------------------------------------------
 SQInteger CSession::Connect(HSQUIRRELVM vm) {
-	const int top = sq_gettop(vm);
+	const int top = static_cast<int>(sq_gettop(vm));
 
 	if (top <= 1) {
 		return sq_throwerror(vm, "Missing the token value");
@@ -173,7 +174,7 @@ void CSession::SetInternalCacheEnabled(bool toggle) {
 
 // ------------------------------------------------------------------------------------------------
 SQInteger CSession::Message(HSQUIRRELVM vm) {
-	const int top = sq_gettop(vm);
+	const int top = static_cast<int>(sq_gettop(vm));
 
 	if (top <= 1) {
 		return sq_throwerror(vm, "Missing the channel ID value");
@@ -220,7 +221,7 @@ SQInteger CSession::Message(HSQUIRRELVM vm) {
 
 // ------------------------------------------------------------------------------------------------
 SQInteger CSession::MessageEmbed(HSQUIRRELVM vm) {
-	const int top = sq_gettop(vm);
+	const int top = static_cast<int>(sq_gettop(vm));
 
 	if (top <= 1) {
 		return sq_throwerror(vm, "Missing the channel ID value");
@@ -271,8 +272,12 @@ SQInteger CSession::MessageEmbed(HSQUIRRELVM vm) {
 	}
 
 	try {
-		auto msg = session->client->sendMessage(channelID, content, *(embed->embed), SleepyDiscord::TTS::Default,
-												SleepyDiscord::Async);
+		auto msg = session->client->sendMessage(
+			channelID, content, *(embed->embed),
+			SleepyDiscord::MessageReference{},
+			SleepyDiscord::TTS::Default,
+			SleepyDiscord::Async
+		);
 	}
 	catch (...) {
 		OutputError("An Error has occured at [CSession] function => [MessageEmbed]");
@@ -283,7 +288,7 @@ SQInteger CSession::MessageEmbed(HSQUIRRELVM vm) {
 
 // ------------------------------------------------------------------------------------------------
 SQInteger CSession::GetRoleName(HSQUIRRELVM vm) {
-	const int top = sq_gettop(vm);
+	const int top = static_cast<int>(sq_gettop(vm));
 
 	if (top <= 1) {
 		return sq_throwerror(vm, "Missing the server ID value");
@@ -354,7 +359,7 @@ SQInteger CSession::GetRoleName(HSQUIRRELVM vm) {
 
 // ------------------------------------------------------------------------------------------------
 SQInteger CSession::EditChannel(HSQUIRRELVM vm) {
-	const int top = sq_gettop(vm);
+	const int top = static_cast<int>(sq_gettop(vm));
 
 	if (top <= 1) {
 		return sq_throwerror(vm, "Missing the channel ID value");
@@ -409,7 +414,7 @@ SQInteger CSession::EditChannel(HSQUIRRELVM vm) {
 
 // ------------------------------------------------------------------------------------------------
 SQInteger CSession::SetActivity(HSQUIRRELVM vm) {
-	const int top = sq_gettop(vm);
+	const int top = static_cast<int>(sq_gettop(vm));
 
 	if (top <= 1) {
 		return sq_throwerror(vm, "Missing the activity value");

@@ -45,7 +45,7 @@ static inline void OutputMessageImpl(const SQChar *msg, va_list args) {
 	CONSOLE_SCREEN_BUFFER_INFO csb_before;
 	GetConsoleScreenBufferInfo(hstdout, &csb_before);
 	SetConsoleTextAttribute(hstdout, FOREGROUND_GREEN);
-	std::printf("[SQMOD] ");
+	std::printf("[DISCORD] ");
 
 	SetConsoleTextAttribute(hstdout, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED |
 									 FOREGROUND_INTENSITY); // NOLINT(hicpp-signed-bitwise)
@@ -54,7 +54,7 @@ static inline void OutputMessageImpl(const SQChar *msg, va_list args) {
 
 	SetConsoleTextAttribute(hstdout, csb_before.wAttributes);
 #else
-	std::printf("\033[21;32m[SQMOD]\033[0m");
+	std::printf("\033[35m[DISCORD]\033[0m");
 	std::vprintf(msg, args);
 	std::puts("");
 #endif // SQ_OS_WINDOWS

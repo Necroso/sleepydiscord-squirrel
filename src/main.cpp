@@ -102,7 +102,8 @@ uint8_t SqDiscord_OnPluginCommand(uint32_t command_identifier, const char * /*me
 // ------------------------------------------------------------------------------------------------
 uint8_t SqDiscord_OnServerInitialise() {
 	printf("\n");
-	OutputMessage("Loaded Discord Module for VC:MP 0.4 by Luckshya.");
+	OutputMessage("Sleepy Discord Plugin for VC:MP 0.4 initialized successfully");
+	OutputMessage("Original development by Luckshya | 2026 update maintained by [LBR]Necroso.");
 
 	return 1;
 }
